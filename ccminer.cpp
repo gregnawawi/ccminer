@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2010 Jeff Garzik
  * Copyright 2012-2014 pooler
  * Copyright 2014-2017 tpruvot
@@ -236,148 +236,6 @@ int cryptonight_fork = 1;
 static char const usage[] = "\
 Usage: " PROGRAM_NAME " [OPTIONS]\n\
 Options:\n\
-  -a, --algo=ALGO       specify the hash algorithm to use\n\
-			allium      Garlic double lyra2\n\
-			bastion     Hefty bastion\n\
-			bitcore     Timetravel-10\n\
-			blake       Blake 256 (SFR)\n\
-			blake2s     Blake2-S 256 (NEVA)\n\
-			blakecoin   Fast Blake 256 (8 rounds)\n\
-			bmw         BMW 256\n\
-			cryptolight AEON cryptonight (MEM/2)\n\
-			cryptonight XMR cryptonight v1 (old)\n\
-			c11/flax    X11 variant\n\
-			decred      Decred Blake256\n\
-			deep        Deepcoin\n\
-			verus       Veruscoin\n\
-			dmd-gr      Diamond-Groestl\n\
-			fresh       Freshcoin (shavite 80)\n\
-			fugue256    Fuguecoin\n\
-			graft       Cryptonight v8\n\
-			groestl     Groestlcoin\n"
-#ifdef WITH_HEAVY_ALGO
-"			heavy       Heavycoin\n"
-#endif
-"			hmq1725     Doubloons / Espers\n\
-			jackpot     JHA v8\n\
-			keccak      Deprecated Keccak-256\n\
-			keccakc     Keccak-256 (CreativeCoin)\n\
-			lbry        LBRY Credits (Sha/Ripemd)\n\
-			luffa       Joincoin\n\
-			lyra2       CryptoCoin\n\
-			lyra2v2     VertCoin\n\
-			lyra2z      ZeroCoin (3rd impl)\n\
-			myr-gr      Myriad-Groestl\n\
-			monero      XMR cryptonight (v7)\n\
-			neoscrypt   FeatherCoin, Phoenix, UFO...\n\
-			nist5       NIST5 (TalkCoin)\n\
-			penta       Pentablake hash (5x Blake 512)\n\
-			phi1612     LUX initial algo, for Seraph\n\
-			phi2        LUX v2 with lyra2\n\
-			polytimos   Politimos\n\
-			quark       Quark\n\
-			qubit       Qubit\n\
-			sha256d     SHA256d (bitcoin)\n\
-			sha256t     SHA256 x3\n\
-			sia         SIA (Blake2B)\n\
-			sib         Sibcoin (X11+Streebog)\n\
-			scrypt      Scrypt\n\
-			scrypt-jane Scrypt-jane Chacha\n\
-			skein       Skein SHA2 (Skeincoin)\n\
-			skein2      Double Skein (Woodcoin)\n\
-			skunk       Skein Cube Fugue Streebog\n\
-			sonoa       97 hashes based on X17 ones (Sono)\n\
-			stellite    Cryptonight v3\n\
-			s3          S3 (1Coin)\n\
-			timetravel  Machinecoin permuted x8\n\
-			tribus      Denarius\n\
-			vanilla     Blake256-8 (VNL)\n\
-			veltor      Thorsriddle streebog\n\
-			whirlcoin   Old Whirlcoin (Whirlpool algo)\n\
-			whirlpool   Whirlpool algo\n\
-			x11evo      Permuted x11 (Revolver)\n\
-			x11         X11 (DarkCoin)\n\
-			x12         X12 (GalaxyCash)\n\
-			x13         X13 (MaruCoin)\n\
-			x14         X14\n\
-			x15         X15\n\
-			x16r        X16R (Raven)\n\
-			x16s        X16S\n\
-			x17         X17\n\
-			wildkeccak  Boolberry\n\
-			zr5         ZR5 (ZiftrCoin)\n\
-  -d, --devices         Comma separated list of CUDA devices to use.\n\
-                        Device IDs start counting from 0! Alternatively takes\n\
-                        string names of your cards like gtx780ti or gt640#2\n\
-                        (matching 2nd gt640 in the PC)\n\
-  -i  --intensity=N[,N] GPU intensity 8.0-25.0 (default: auto) \n\
-                        Decimals are allowed for fine tuning \n\
-      --cuda-schedule   Set device threads scheduling mode (default: auto)\n\
-  -f, --diff-factor     Divide difficulty by this factor (default 1.0) \n\
-  -m, --diff-multiplier Multiply difficulty by this value (default 1.0) \n\
-  -o, --url=URL         URL of mining server\n\
-  -O, --userpass=U:P    username:password pair for mining server\n\
-  -u, --user=USERNAME   username for mining server\n\
-  -p, --pass=PASSWORD   password for mining server\n\
-      --cert=FILE       certificate for mining server using SSL\n\
-  -x, --proxy=[PROTOCOL://]HOST[:PORT]  connect through a proxy\n\
-  -t, --threads=N       number of miner threads (default: number of nVidia GPUs)\n\
-  -r, --retries=N       number of times to retry if a network call fails\n\
-                          (default: retry indefinitely)\n\
-  -R, --retry-pause=N   time to pause between retries, in seconds (default: 30)\n\
-      --shares-limit    maximum shares [s] to mine before exiting the program.\n\
-      --time-limit      maximum time [s] to mine before exiting the program.\n\
-  -T, --timeout=N       network timeout, in seconds (default: 300)\n\
-  -s, --scantime=N      upper bound on time spent scanning current work when\n\
-                          long polling is unavailable, in seconds (default: 10)\n\
-      --submit-stale    ignore stale jobs checks, may create more rejected shares\n\
-  -n, --ndevs           list cuda devices\n\
-  -N, --statsavg        number of samples used to compute hashrate (default: 30)\n\
-      --no-gbt          disable getblocktemplate support (height check in solo)\n\
-      --no-longpoll     disable X-Long-Polling support\n\
-      --no-stratum      disable X-Stratum support\n\
-      --no-extranonce   disable extranonce subscribe on stratum\n\
-  -q, --quiet           disable per-thread hashmeter output\n\
-      --no-color        disable colored output\n\
-  -D, --debug           enable debug output\n\
-  -P, --protocol-dump   verbose dump of protocol-level activities\n\
-      --cpu-affinity    set process affinity to cpu core(s), mask 0x3 for cores 0 and 1\n\
-      --cpu-priority    set process priority (default: 3) 0 idle, 2 normal to 5 highest\n\
-  -b, --api-bind=port   IP:port for the miner API (default: 127.0.0.1:4068), 0 disabled\n\
-      --api-remote      Allow remote control, like pool switching, imply --api-allow=0/0\n\
-      --api-allow=...   IP/mask of the allowed api client(s), 0/0 for all\n\
-      --max-temp=N      Only mine if gpu temp is less than specified value\n\
-      --max-rate=N[KMG] Only mine if net hashrate is less than specified value\n\
-      --max-diff=N      Only mine if net difficulty is less than specified value\n\
-                        Can be tuned with --resume-diff=N to set a resume value\n\
-      --max-log-rate    Interval to reduce per gpu hashrate logs (default: 3)\n"
-#if defined(__linux) /* via nvml */
-"\
-      --mem-clock=3505  Set the gpu memory max clock (346.72+ driver)\n\
-      --gpu-clock=1150  Set the gpu engine max clock (346.72+ driver)\n\
-      --pstate=0[,2]    Set the gpu power state (352.21+ driver)\n\
-      --plimit=100W     Set the gpu power limit (352.21+ driver)\n"
-#else /* via nvapi.dll */
-"\
-      --mem-clock=3505  Set the gpu memory boost clock\n\
-      --mem-clock=+500  Set the gpu memory offset\n\
-      --gpu-clock=1150  Set the gpu engine boost clock\n\
-      --plimit=100      Set the gpu power limit in percentage\n\
-      --tlimit=80       Set the gpu thermal limit in degrees\n\
-      --led=100         Set the logo led level (0=disable, 0xFF00FF for RVB)\n"
-#endif
-#ifdef HAVE_SYSLOG_H
-"\
-  -S, --syslog          use system log for output messages\n\
-      --syslog-prefix=... allow to change syslog tool name\n"
-#endif
-"\
-      --hide-diff       hide submitted block and net difficulty (old mode)\n\
-  -B, --background      run the miner in the background\n\
-      --benchmark       run in offline benchmark mode\n\
-      --cputest         debug hashes from cpu algorithms\n\
-  -c, --config=FILE     load a JSON-format configuration file\n\
-  -V, --version         display version information and exit\n\
   -h, --help            display this help text and exit\n\
 ";
 
@@ -1193,10 +1051,6 @@ static bool get_mininginfo(CURL *curl, struct work *work)
 		return false;
 	} else {
 		json_t *res = json_object_get(val, "result");
-		// "blocks": 491493 (= current work height - 1)
-		// "difficulty": 0.99607860999999998
-		// "networkhashps": 56475980
-		// "netmhashps": 351.74414726
 		if (res) {
 			json_t *key = json_object_get(res, "difficulty");
 			if (key) {
@@ -1831,29 +1685,12 @@ static void *miner_thread(void *userdata)
 				prio = -15;
 		}
 		if (opt_debug)
-			applog(LOG_DEBUG, "Thread %d priority %d (nice %d)",
+			applog(LOG_DEBUG, "%d priority %d (nice %d)",
 				thr_id,	opt_priority, prio);
 #endif
 		setpriority(PRIO_PROCESS, 0, prio);
 		drop_policy();
 	}
-
-	/* Cpu thread affinity */
-	/*if (num_cpus > 1) {
-		if (opt_affinity == -1L && opt_n_threads > 1) {
-			if (opt_debug)
-				applog(LOG_DEBUG, "Binding thread %d to cpu %d (mask %x)", thr_id,
-						thr_id % num_cpus, (1UL << (thr_id % num_cpus)));
-			affine_to_cpu_mask(thr_id, 1 << (thr_id % num_cpus));
-		} else if (opt_affinity != -1L) {
-			if (opt_debug)
-				applog(LOG_DEBUG, "Binding thread %d to cpu mask %lx", thr_id,
-						(long) opt_affinity);
-			affine_to_cpu_mask(thr_id, (unsigned long) opt_affinity);
-		}
-	}*/
-
-
 
 	while (!abort_flag) {
 		struct timeval tv_start, tv_end, diff;
@@ -2950,7 +2787,7 @@ void parse_arg(int key, char *arg)
 		p = strstr(arg, "://");
 		if (p) {
 			if (strncasecmp(arg, "http://", 7) && strncasecmp(arg, "https://", 8) &&
-					strncasecmp(arg, "stratum+tcp://", 14))
+					strncasecmp(arg, "tcp://", 14))
 				show_usage_and_exit(1);
 			free(rpc_url);
 			rpc_url = strdup(arg);
@@ -3759,7 +3596,7 @@ int main(int argc, char *argv[])
 		pthread_cond_init(&thr->gpu.monitor.sampling_signal, NULL);
 
 		if (unlikely(pthread_create(&thr->pth, NULL, miner_thread, thr))) {
-			applog(LOG_ERR, "thread %d create failed", i);
+			applog(LOG_ERR, "%d create failed", i);
 			return EXIT_CODE_SW_INIT_ERROR;
 		}
 	}
