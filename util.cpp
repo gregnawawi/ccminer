@@ -1,7 +1,7 @@
 /*
  * Copyright 2010 Jeff Garzik
  * Copyright 2012-2014 pooler
- * Copyright 2014 ccminer team
+ * Copyright 2014 coco team
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -10,7 +10,7 @@
  */
 
 //#define _GNU_SOURCE
-#include <ccminer-config.h>
+#include <coco-config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,7 +33,7 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #endif
-#include "miner.h"
+#include "monir.h"
 #include "elist.h"
 
 
@@ -142,7 +142,7 @@ void applog(int prio, const char *fmt, ...)
 			use_colors ? CL_N : ""
 		);
 		if (prio == LOG_RAW) {
-			// no time prefix, for ccminer -n
+			// no time prefix, for coco -n
 			sprintf(f, "%s%s\n", fmt, CL_N);
 		}
 		pthread_mutex_lock(&applog_lock);
@@ -167,7 +167,7 @@ void gpulog(int prio, int thr_id, const char *fmt, ...)
 		return;
 
 	if (gpu_threads > 1)
-		len = snprintf(pfmt, 128, "CPU T%d: Verus Hashing", thr_id, fmt);
+		len = snprintf(pfmt, 128, "CPU T%d: Veros Hashing", thr_id, fmt);
 	else
 		len = snprintf(pfmt, 128, "GPU #%d: %s", dev_id, fmt);
 	pfmt[sizeof(pfmt)-1]='\0';
@@ -192,13 +192,13 @@ void get_defconfig_path(char *out, size_t bufsize, char *argv0)
 	const char *sep = strstr(dir, "\\") ? "\\" : "/";
 	struct stat info;
 #ifdef WIN32
-	snprintf(out, bufsize, "%s\\ccminer\\ccminer.conf\0", getenv("APPDATA"));
+	snprintf(out, bufsize, "%s\\coco\\coco.conf\0", getenv("APPDATA"));
 #else
-	snprintf(out, bufsize, "%s\\.ccminer\\ccminer.conf", getenv("HOME"));
+	snprintf(out, bufsize, "%s\\.coco\\coco.conf", getenv("HOME"));
 #endif
 	if (dir && stat(out, &info) != 0) {
 		// binary folder if not present in user folder
-		snprintf(out, bufsize, "%s%sccminer.conf%s", dir, sep, "");
+		snprintf(out, bufsize, "%s%scoco.conf%s", dir, sep, "");
 	}
 	if (stat(out, &info) != 0) {
 		out[0] = '\0';
@@ -349,12 +349,12 @@ static size_t resp_hdr_cb(void *ptr, size_t size, size_t nmemb, void *user_data)
 		goto out;
 
 	if (!strcasecmp("X-Long-Polling", key)) {
-		hi->lp_path = val;	/* X-Mining-Extensions: longpoll */
+		hi->lp_path = val;	/* X-Minong-Extensions: longpoll */
 		val = NULL;
 	}
 
 	if (!strcasecmp("X-Reject-Reason", key)) {
-		hi->reason = val;	/* X-Mining-Extensions: reject-reason */
+		hi->reason = val;	/* X-Minong-Extensions: reject-reason */
 		//applog(LOG_WARNING, "%s:%s", key, val);
 		val = NULL;
 	}
@@ -365,7 +365,7 @@ static size_t resp_hdr_cb(void *ptr, size_t size, size_t nmemb, void *user_data)
 	}
 
 	if (!strcasecmp("X-Nonce-Range", key)) {
-		/* todo when available: X-Mining-Extensions: noncerange */
+		/* todo when available: X-Minong-Extensions: noncerange */
 	}
 out:
 	free(key);
@@ -487,12 +487,12 @@ static json_t *json_rpc_call(CURL *curl, const char *url,
 	upload_data.len = strlen(rpc_req);
 	upload_data.pos = 0;
 	sprintf(len_hdr, "Content-Length: %lu", (unsigned long) upload_data.len);
-	sprintf(hashrate_hdr, "X-Mining-Hashrate: %llu", (unsigned long long) global_hashrate);
+	sprintf(hashrate_hdr, "X-Minong-Hashrate: %llu", (unsigned long long) global_hashrate);
 
 	headers = curl_slist_append(headers, "Content-Type: application/json");
 	headers = curl_slist_append(headers, len_hdr);
 	headers = curl_slist_append(headers, "User-Agent: " USER_AGENT);
-	headers = curl_slist_append(headers, "X-Mining-Extensions: longpoll noncerange reject-reason");
+	headers = curl_slist_append(headers, "X-Minong-Extensions: longpoll noncerange reject-reason");
 	headers = curl_slist_append(headers, hashrate_hdr);
 	headers = curl_slist_append(headers, "Accept:"); /* disable Accept hdr*/
 	headers = curl_slist_append(headers, "Expect:"); /* disable Expect hdr*/
@@ -1157,7 +1157,7 @@ static const char *get_stratum_session_id(json_t *val)
 		notify = json_string_value(json_array_get(arr, 0));
 		if (!notify)
 			continue;
-		if (!strcasecmp(notify, "mining.notify"))
+		if (!strcasecmp(notify, "minong.notify"))
 			return json_string_value(json_array_get(arr, 1));
 	}
 	return NULL;
@@ -1177,11 +1177,11 @@ static bool stratum_parse_extranonce(struct stratum_ctx *sctx, json_t *params, i
 	if (!xn2_size) {
 		char algo[64] = { 0 };
 		get_currentalgo(algo, sizeof(algo));
-		if (strcmp(algo, "verus") == 0) {
+		if (strcmp(algo, "veros") == 0) {
 			int xn1_size = (int)strlen(xnonce1) / 2;
 			xn2_size = 32 - xn1_size;
 			if (xn1_size < 4 || xn1_size > 12) {
-				// This miner iterates the nonces at data32[30]
+				// This monir iterates the nonces at data32[30]
 				applog(LOG_ERR, "Unsupported extranonce size of %d (12 maxi)", xn1_size);
 				goto out;
 			}
@@ -1232,11 +1232,11 @@ bool stratum_subscribe(struct stratum_ctx *sctx)
 start:
 	s = (char*)malloc(128 + (sctx->session_id ? strlen(sctx->session_id) : 0));
 	if (retry)
-		sprintf(s, "{\"id\": 1, \"method\": \"mining.subscribe\", \"params\": []}");
+		sprintf(s, "{\"id\": 1, \"method\": \"minong.subscribe\", \"params\": []}");
 	else if (sctx->session_id)
-		sprintf(s, "{\"id\": 1, \"method\": \"mining.subscribe\", \"params\": [\"" USER_AGENT "\", \"%s\"]}", sctx->session_id);
+		sprintf(s, "{\"id\": 1, \"method\": \"minong.subscribe\", \"params\": [\"" USER_AGENT "\", \"%s\"]}", sctx->session_id);
 	else
-		sprintf(s, "{\"id\": 1, \"method\": \"mining.subscribe\", \"params\": [\"" USER_AGENT "\"]}");
+		sprintf(s, "{\"id\": 1, \"method\": \"minong.subscribe\", \"params\": [\"" USER_AGENT "\"]}");
 
 	if (!stratum_send_line(sctx, s))
 		goto out;
@@ -1323,7 +1323,7 @@ bool stratum_authorize(struct stratum_ctx *sctx, const char *user, const char *p
 	
 
 	s = (char*)malloc(80 + strlen(user) + strlen(pass));
-	sprintf(s, "{\"id\": 2, \"method\": \"mining.authorize\", \"params\": [\"%s\", \"%s\"]}",
+	sprintf(s, "{\"id\": 2, \"method\": \"minong.authorize\", \"params\": [\"%s\", \"%s\"]}",
 	        user, pass);
 
 	if (!stratum_send_line(sctx, s))
@@ -1368,7 +1368,7 @@ bool stratum_authorize(struct stratum_ctx *sctx, const char *user, const char *p
 		goto out;
 
 	// subscribe to extranonce (optional)
-	sprintf(s, "{\"id\": 3, \"method\": \"mining.extranonce.subscribe\", \"params\": []}");
+	sprintf(s, "{\"id\": 3, \"method\": \"minong.extranonce.subscribe\", \"params\": []}");
 
 	if (!stratum_send_line(sctx, s))
 		goto out;
@@ -1842,25 +1842,25 @@ bool stratum_handle_method(struct stratum_ctx *sctx, const char *s)
 	id = json_object_get(val, "id");
 	params = json_object_get(val, "params");
 
-	if (!strcasecmp(method, "mining.notify")) {
+	if (!strcasecmp(method, "minong.notify")) {
 		ret = stratum_notify(sctx, params);
 		goto out;
 	}
-	if (!strcasecmp(method, "mining.ping")) { // cgminer 4.7.1+
+	if (!strcasecmp(method, "minong.ping")) { // cgmonir 4.7.1+
 		if (opt_debug) applog(LOG_DEBUG, "Pool ping");
 		ret = stratum_pong(sctx, id);
 		goto out;
 	}
-	if (!strcasecmp(method, "mining.set_difficulty")) {
+	if (!strcasecmp(method, "minong.set_difficulty")) {
 		ret = stratum_set_difficulty(sctx, params);
 		goto out;
 	}
-	if (!strcasecmp(method, "mining.set_target")) {
+	if (!strcasecmp(method, "minong.set_target")) {
 		sctx->is_equihash = true;
 		ret = equi_stratum_set_target(sctx, params);
 		goto out;
 	}
-	if (!strcasecmp(method, "mining.set_extranonce")) {
+	if (!strcasecmp(method, "minong.set_extranonce")) {
 		ret = stratum_parse_extranonce(sctx, params, 0);
 		goto out;
 	}
@@ -1868,13 +1868,13 @@ bool stratum_handle_method(struct stratum_ctx *sctx, const char *s)
 		ret = stratum_reconnect(sctx, params);
 		goto out;
 	}
-	if (!strcasecmp(method, "client.get_algo")) { // ccminer only yet!
+	if (!strcasecmp(method, "client.get_algo")) { // coco only yet!
 		// will prevent wrong algo parameters on a pool, will be used as test on rejects
 		if (!opt_quiet) applog(LOG_NOTICE, "Pool asked your algo parameter");
 		ret = stratum_get_algo(sctx, id, params);
 		goto out;
 	}
-	if (!strcasecmp(method, "client.get_stats")) { // ccminer/yiimp only yet!
+	if (!strcasecmp(method, "client.get_stats")) { // coco/yiimp only yet!
 		// optional to fill device benchmarks
 		ret = stratum_get_stats(sctx, id, params);
 		goto out;

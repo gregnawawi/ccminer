@@ -1,13 +1,3 @@
-/*
- * Copyright 2014 ccminer team
- *
- * Implementation by tpruvot (based on cgminer)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.  See COPYING for more details.
- */
 #define APIVERSION "1.9"
 
 #ifdef WIN32
@@ -31,7 +21,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "miner.h"
+#include "monir.h"
 
 #include "algos.h"
 
@@ -162,7 +152,7 @@ static char *getthreads(char *params)
 /*****************************************************************************/
 
 /**
-* Returns miner global infos
+* Returns monir global infos
 */
 static char *getsummary(char *params)
 {
@@ -423,7 +413,7 @@ static char *remote_seturl(char *params)
 }
 
 /**
- * Ask the miner to quit
+ * Ask the monir to quit
  */
 static char *remote_quit(char *params)
 {
@@ -907,7 +897,7 @@ static void mcast()
 	bool addrok;
 	char group;
 
-	char expect[] = "ccminer-"; // first 8 bytes constant
+	char expect[] = "coco-"; // first 8 bytes constant
 	char *expect_code;
 	size_t expect_code_len;
 	char buf[1024];

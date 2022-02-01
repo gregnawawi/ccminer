@@ -30,7 +30,7 @@
 #define HASHOUT 50
 #endif
 
-#include <miner.h>
+#include <monir.h>
 
 static void digestInit(blake2b_state *S, const uint32_t n, const uint32_t k)
 {

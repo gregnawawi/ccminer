@@ -6,7 +6,7 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
-#include <miner.h>
+#include <monir.h>
 
 #include "equihash.h"
 
@@ -257,7 +257,7 @@ bool equi_stratum_submit(struct pool_infos *pool, struct work *work)
 	jobid = work->job_id + 8;
 	sprintf(timehex, "%08x", swab32(work->data[25]));
 
-	snprintf(s, sizeof(s), "{\"method\":\"mining.submit\",\"params\":"
+	snprintf(s, sizeof(s), "{\"method\":\"minong.submit\",\"params\":"
 		"[\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"], \"id\":%u}",
 		pool->user, jobid, timehex, noncestr, solhex,
 		stratum.job.shares_count + 10);

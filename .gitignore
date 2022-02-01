@@ -1,5 +1,5 @@
 
-ccminer
+coco
 *.o
 
 autom4te.cache
@@ -15,7 +15,7 @@ depcomp
 missing
 install-sh
 stamp-h1
-ccminer-config.h*
+coco-config.h*
 compile
 config.log
 config.status

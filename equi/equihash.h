@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-// miner nonce "cursor" unique for each thread
+// monir nonce "cursor" unique for each thread
 #define EQNONCE_OFFSET 30 /* 27:34 */
 
 #define WK 9

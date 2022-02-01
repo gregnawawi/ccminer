@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# sample script to query ccminer API
+# sample script to query coco API
 
 my $command = "summary|";
 
@@ -29,6 +29,6 @@ if ($sock) {
 
 } else {
 
-    print("ccminer socket failed\n");
+    print("coco socket failed\n");
 
 }

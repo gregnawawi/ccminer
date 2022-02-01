@@ -217,7 +217,7 @@ typedef struct {
 	NvU32 version;
 	NvU32 flags;     // 0
 	NvU64 timeRef;   // increment with time
-	NvU64 val1;      // seen 1 4 5 while mining, 16 else
+	NvU64 val1;      // seen 1 4 5 while minong, 16 else
 	NvU64 val2;      // seen 7 and 3
 	NvU64 values[3]; // increment with time
 	NvU32 pad[326];  // empty

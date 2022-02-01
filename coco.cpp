@@ -9,7 +9,7 @@
  * any later version.  See COPYING for more details.
  */
 
-#include <ccminer-config.h>
+#include <coco-config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,7 +40,7 @@
 #endif
 #endif
 
-#include "miner.h"
+#include "monir.h"
 #include "algos.h"
 
 #include "equi/equihash.h"
@@ -54,7 +54,7 @@
 BOOL WINAPI ConsoleHandler(DWORD);
 #endif
 
-#define PROGRAM_NAME		"ccminer"
+#define PROGRAM_NAME		"coco"
 #define LP_SCANTIME		60
 #define HEAVYCOIN_BLKHDR_SZ		84
 #define MNR_BLKHDR_SZ 80
@@ -203,7 +203,7 @@ double   stratum_diff = 0.0;
 double   net_diff = 0;
 uint64_t net_hashrate = 0;
 uint64_t net_blocks = 0;
-// conditional mining
+// conditional minong
 uint8_t conditional_state[MAX_GPUS] = { 0 };
 double opt_max_temp = 0.0;
 double opt_max_diff = -1.;
@@ -334,43 +334,20 @@ struct option options[] = {
 	{ 0, 0, 0, 0 }
 };
 
-static char const scrypt_usage[] = "\n\
-Scrypt specific options:\n\
-  -l, --launch-config   gives the launch configuration for each kernel\n\
-                        in a comma separated list, one per device.\n\
-  -L, --lookup-gap      Divides the per-hash memory requirement by this factor\n\
-                        by storing only every N'th value in the scratchpad.\n\
-                        Default is 1.\n\
-      --interactive     comma separated list of flags (0/1) specifying\n\
-                        which of the CUDA device you need to run at inter-\n\
-                        active frame rates (because it drives a display).\n\
-      --texture-cache   comma separated list of flags (0/1/2) specifying\n\
-                        which of the CUDA devices shall use the texture\n\
-                        cache for mining. Kepler devices may profit.\n\
-      --no-autotune     disable auto-tuning of kernel launch parameters\n\
+static char const s_usage[] = "\n\
 ";
 
-static char const xmr_usage[] = "\n\
-CryptoNight specific options:\n\
-  -l, --launch-config   gives the launch configuration for each kernel\n\
-                        in a comma separated list, one per device.\n\
-      --bfactor=[0-12]  Run Cryptonight core kernel in smaller pieces,\n\
-                        From 0 (ui freeze) to 12 (smooth), win default is 11\n\
-                        This is a per-device setting like the launch config.\n\
+static char const r_usage[] = "\n\
 ";
 
-static char const bbr_usage[] = "\n\
-Boolberry specific options:\n\
-  -l, --launch-config   gives the launch configuration for each kernel\n\
-                        in a comma separated list, one per device.\n\
-  -k, --scratchpad url  Url used to download the scratchpad cache.\n\
+static char const br_usage[] = "\n\
 ";
 
 struct work _ALIGN(64) g_work;
 volatile time_t g_work_time;
 pthread_mutex_t g_work_lock;
 
-// get const array size (defined in ccminer.cpp)
+// get const array size (defined in coco.cpp)
 int options_count()
 {
 	int n = 0;
@@ -639,7 +616,7 @@ static bool work_decode(const json_t *val, struct work *work)
 		}
 	}
 
-	/* use work ntime as job id (solo-mining) */
+	/* use work ntime as job id (solo-minong) */
 	cbin2hex(work->job_id, (const char*)&work->data[17], 4);
 
 	if (opt_algo == ALGO_DECRED) {
@@ -878,12 +855,12 @@ static bool submit_upstream_work(CURL *curl, struct work *work)
 
 		if (opt_vote) { // ALGO_HEAVY
 			nvotestr = bin2hex((const uchar*)(&nvote), 2);
-			sprintf(s, "{\"method\": \"mining.submit\", \"params\": ["
+			sprintf(s, "{\"method\": \"minong.submit\", \"params\": ["
 					"\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\"], \"id\":%u}",
 					pool->user, work->job_id + 8, xnonce2str, ntimestr, noncestr, nvotestr, stratum.job.shares_count + 10);
 			free(nvotestr);
 		} else {
-			sprintf(s, "{\"method\": \"mining.submit\", \"params\": ["
+			sprintf(s, "{\"method\": \"minong.submit\", \"params\": ["
 					"\"%s\", \"%s\", \"%s\", \"%s\", \"%s\"], \"id\":%u}",
 					pool->user, work->job_id + 8, xnonce2str, ntimestr, noncestr, stratum.job.shares_count + 10);
 		}
@@ -1029,7 +1006,7 @@ static bool get_blocktemplate(CURL *curl, struct work *work)
 	return rc;
 }
 
-// good alternative for wallet mining, difficulty and net hashrate
+// good alternative for wallet minong, difficulty and net hashrate
 static const char *info_req =
 	"{\"method\": \"getmininginfo\", \"params\": [], \"id\":8}\r\n";
 
@@ -1641,7 +1618,7 @@ static bool wanna_mine(int thr_id)
 	return state;
 }
 
-static void *miner_thread(void *userdata)
+static void *monir_thread(void *userdata)
 {
 	struct thr_info *mythr = (struct thr_info *)userdata;
 	int switchn = pool_switch_count;
@@ -1765,7 +1742,7 @@ static void *miner_thread(void *userdata)
 						switchn = pool_switch_count;
 						continue;
 					} else {
-						applog(LOG_ERR, "work retrieval failed, exiting mining thread %d", mythr->id);
+						applog(LOG_ERR, "work retrieval failed, exiting minong thread %d", mythr->id);
 						goto out;
 					}
 				}
@@ -1828,7 +1805,7 @@ static void *miner_thread(void *userdata)
 		}
 		
 
-		/* conditional mining */
+		/* conditional minong */
 		if (!wanna_mine(thr_id))
 		{
 			// reset default mem offset before idle..
@@ -1883,7 +1860,7 @@ static void *miner_thread(void *userdata)
 				if (num_pools > 1 && pools[cur_pooln].time_limit > 0) {
 					if (!pool_is_switching) {
 						if (!opt_quiet)
-							applog(LOG_INFO, "Pool mining timeout of %ds reached, rotate...", opt_time_limit);
+							applog(LOG_INFO, "Pool minong timeout of %ds reached, rotate...", opt_time_limit);
 						pool_switch_next(thr_id);
 					} else if (passed > 35) {
 						// ensure we dont stay locked if pool_is_switching is not reset...
@@ -1903,7 +1880,7 @@ static void *miner_thread(void *userdata)
 					usleep(200*1000);
 					fprintf(stderr, "%llu\n", (long long unsigned int) global_hashrate);
 				} else {
-					applog(LOG_NOTICE, "Mining timeout of %ds reached, exiting...", opt_time_limit);
+					applog(LOG_NOTICE, "Minong timeout of %ds reached, exiting...", opt_time_limit);
 				}
 				workio_abort();
 				break;
@@ -1935,7 +1912,7 @@ static void *miner_thread(void *userdata)
 				}
 				abort_flag = true;
 				app_exit_code = EXIT_CODE_OK;
-				applog(LOG_NOTICE, "Mining limit of %d shares reached, exiting...", opt_shares_limit);
+				applog(LOG_NOTICE, "Minong limit of %d shares reached, exiting...", opt_shares_limit);
 				workio_abort();
 				break;
 			}
@@ -2062,7 +2039,7 @@ static void *miner_thread(void *userdata)
 
 		
 		case ALGO_EQUIHASH:
-			rc = scanhash_verus(thr_id, &work, max_nonce, &hashes_done);
+			rc = scanhash_veros(thr_id, &work, max_nonce, &hashes_done);
 			break;
 		
 
@@ -2074,7 +2051,7 @@ static void *miner_thread(void *userdata)
 		
 
 		if (abort_flag)
-			break; // time to leave the mining loop...
+			break; // time to leave the minong loop...
 
 		if (work_restart[thr_id].restart)
 			continue;
@@ -2154,7 +2131,7 @@ static void *miner_thread(void *userdata)
 			// since pool start
 			pools[cur_pooln].work_time = (uint32_t) (time(NULL) - firstwork_time);
 
-			// X-Mining-Hashrate
+			// X-Minong-Hashrate
 			global_hashrate = llround(hashrate);
 		}
 
@@ -2560,13 +2537,13 @@ static void show_usage_and_exit(int status)
 		printf(usage);
 
 	if (opt_algo == ALGO_SCRYPT || opt_algo == ALGO_SCRYPT_JANE) {
-		printf(scrypt_usage);
+		printf(s_usage);
 	}
 	else if (opt_algo == ALGO_CRYPTONIGHT || opt_algo == ALGO_CRYPTOLIGHT) {
-		printf(xmr_usage);
+		printf(r_usage);
 	}
 	else if (opt_algo == ALGO_WILDKECCAK) {
-		printf(bbr_usage);
+		printf(br_usage);
 	}
 	proper_exit(status);
 }
@@ -3315,12 +3292,7 @@ int main(int argc, char *argv[])
 //	printf("                            ....                           ....                  .....\n");
 //	printf("*********************************************************************************************************\n");
 
-	printf("\n      *** ccminer CPU" PACKAGE_VERSION ".1 for Verushash v2.1 - 2.2  by Monkins1010 based on ccminer***\n\n");
-
-		//printf("    Built with VC++ %d" , msver());
-		printf("Originally based on Christian Buchner and Christian H. project\n");
-
-		printf("Located at: " PACKAGE_URL " \n\n");
+	printf("\n      *** coco CPU" PACKAGE_VERSION ".1 based on coco***\n\n");
 	
 
 	rpc_user = strdup("");
@@ -3476,7 +3448,7 @@ int main(int argc, char *argv[])
 		}
 		SetPriorityClass(GetCurrentProcess(), prio);
 	}
-	// Prevent windows to sleep while mining
+	// Prevent windows to sleep while minong
 	SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED);
 	// Enable windows high precision timer
 	timeBeginPeriod(1);
@@ -3580,7 +3552,7 @@ int main(int argc, char *argv[])
 
 
 
-	/* start mining threads */
+	/* start minong threads */
 	for (i = 0; i < opt_n_threads; i++) {
 		thr = &thr_info[i];
 
@@ -3595,13 +3567,13 @@ int main(int argc, char *argv[])
 		pthread_mutex_init(&thr->gpu.monitor.lock, NULL);
 		pthread_cond_init(&thr->gpu.monitor.sampling_signal, NULL);
 
-		if (unlikely(pthread_create(&thr->pth, NULL, miner_thread, thr))) {
+		if (unlikely(pthread_create(&thr->pth, NULL, monir_thread, thr))) {
 			applog(LOG_ERR, "%d create failed", i);
 			return EXIT_CODE_SW_INIT_ERROR;
 		}
 	}
 
-	applog(LOG_INFO, "%d miner thread%s started, "
+	applog(LOG_INFO, "%d monir thread%s started, "
 		"using '%s' algorithm.",
 		opt_n_threads, opt_n_threads > 1 ? "s":"",
 		algo_names[opt_algo]);
@@ -3611,7 +3583,7 @@ int main(int argc, char *argv[])
 
 	abort_flag = true;
 
-	/* wait for mining threads */
+	/* wait for minong threads */
 	for (i = 0; i < opt_n_threads; i++) {
 		struct cgpu_info *cgpu = &thr_info[i].gpu;
 		if (monitor_thr_id != -1 && cgpu) {

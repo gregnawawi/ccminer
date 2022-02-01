@@ -10,13 +10,13 @@
 #include <memory.h>
 #include <map>
 
-#include "miner.h"
+#include "monir.h"
 
 #define HI_DWORD(u64) ((uint32_t) (u64 >> 32))
 #define LO_DWORD(u64) ((uint32_t) u64)
 #define MK_HI64(u32) (0x100000000ULL * u32)
 
-/* from miner.h
+/* from monir.h
 struct hashlog_data {
 	uint8_t npool;
 	uint8_t pool_type;

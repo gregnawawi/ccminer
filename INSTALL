@@ -22,10 +22,10 @@ sudo apt-get install gcc-5 g++-5
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 1
 ```
 
-Then use the helper ./build.sh in ccminer source folder, edit configure.sh and the Makefile.am if required.
+Then use the helper ./build.sh in coco source folder, edit configure.sh and the Makefile.am if required.
 ```
 ./build.sh
-./ccminer --version
+./coco --version
 ```
 
 
@@ -77,7 +77,7 @@ make -j 8 && make install
 
 ./build.sh
 
-./ccminer -n
+./coco -n
 
 
 ** How to compile on macOS **
@@ -93,5 +93,5 @@ brew install pkg-config autoconf automake curl openssl llvm
 
 ./build.sh
 
-./ccminer -n
+./coco -n
 

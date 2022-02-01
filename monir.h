@@ -1,11 +1,11 @@
-#ifndef __MINER_H__
-#define __MINER_H__
+#ifndef __monir_H__
+#define __monir_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <ccminer-config.h>
+#include <coco-config.h>
 
 #include <stdbool.h>
 #include <inttypes.h>
@@ -281,7 +281,7 @@ void sha256d(unsigned char *hash, const unsigned char *data, int len);
 struct work;
 
 
-extern int scanhash_verus(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done);
+extern int scanhash_veros(int thr_id, struct work* work, uint32_t max_nonce, unsigned long *hashes_done);
 
 
 /* free device allocated memory per algo */
@@ -768,4 +768,4 @@ void print_hash_tests(void);
 }
 #endif
 
-#endif /* __MINER_H__ */
+#endif /* __monir_H__ */

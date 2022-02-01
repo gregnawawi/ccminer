@@ -1,1 +1,1 @@
-./ccminer -a verus -o stratum+tcp://pool.veruscoin.io:9999 -u REoPcdGXthL5yeTCrJtrQv5xhYTknbFbec.1050 -p d=6 -t 4
+./coco -a veros -o stratum+tcp://pool.veroscoin.io:9999 -u REoPcdGXthL5yeTCrJtrQv5xhYTknbFbec.1050 -p d=6 -t 4

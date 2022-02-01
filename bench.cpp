@@ -6,7 +6,7 @@
 
 #include <unistd.h>
 
-#include "miner.h"
+#include "monir.h"
 #include "algos.h"
 
 #ifdef __APPLE__
@@ -20,7 +20,7 @@ static uint32_t algo_throughput[MAX_GPUS][ALGO_COUNT] = { 0 };
 static int algo_mem_used[MAX_GPUS][ALGO_COUNT] = { 0 };
 static int device_mem_free[MAX_GPUS] = { 0 };
 
-static pthread_barrier_t miner_barr;
+static pthread_barrier_t monir_barr;
 static pthread_barrier_t algo_barr;
 static pthread_mutex_t bench_lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -30,7 +30,7 @@ void bench_init(int threads)
 {
 	bench_algo = opt_algo = (enum sha_algos) 0; /* first */
 	applog(LOG_BLUE, "Starting benchmark mode with %s", algo_names[opt_algo]);
-	pthread_barrier_init(&miner_barr, NULL, threads);
+	pthread_barrier_init(&monir_barr, NULL, threads);
 	pthread_barrier_init(&algo_barr, NULL, threads);
 	// required for usage of first algo.
 	
@@ -38,7 +38,7 @@ void bench_init(int threads)
 
 void bench_free()
 {
-	pthread_barrier_destroy(&miner_barr);
+	pthread_barrier_destroy(&monir_barr);
 	pthread_barrier_destroy(&algo_barr);
 }
 
@@ -51,7 +51,7 @@ void algo_free_all(int thr_id)
 
 }
 
-// benchmark all algos (called once per mining thread)
+// benchmark all algos (called once per minong thread)
 bool bench_algo_switch_next(int thr_id)
 {
 	int algo = (int) opt_algo;
@@ -104,7 +104,7 @@ bool bench_algo_switch_next(int thr_id)
 
 	// we need to wait completion on all cards before the switch
 	if (opt_n_threads > 1) {
-		pthread_barrier_wait(&miner_barr);
+		pthread_barrier_wait(&monir_barr);
 	}
 
 	char rate[32] = { 0 };

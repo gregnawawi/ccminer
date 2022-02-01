@@ -3,19 +3,19 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 /*
-This provides the PoW hash function for Verus, enabling CPU mining.
+This provides the PoW hash function for Veros, enabling CPU minong.
 */
-#ifndef VERUS_HASH_H_
-#define VERUS_HASH_H_
+#ifndef VEROS_HASH_H_
+#define VEROS_HASH_H_
 
 // verbose output when defined
-//#define VERUSHASHDEBUG 1
+//#define VEROSHASHDEBUG 1
 
 #include <cstring>
 #include <vector>
 
 #include "uint256.h"
-#include "verus_clhash.h"
+#include "veros_clhash.h"
 
 extern "C" 
 {
@@ -24,7 +24,7 @@ extern "C"
 
 }
 
-class CVerusHash
+class CVerosHash
 {
     public:
         static void Hash(void *result, const void *data, size_t len);
@@ -32,11 +32,11 @@ class CVerusHash
 
         static void init();
 
-        CVerusHash() { }
+        CVerosHash() { }
 
-        CVerusHash &Write(const unsigned char *data, size_t len);
+        CVerosHash &Write(const unsigned char *data, size_t len);
 
-        CVerusHash &Reset()
+        CVerosHash &Reset()
         {
             curBuf = buf1;
             result = buf2;
@@ -73,7 +73,7 @@ class CVerusHash
         size_t curPos = 0;
 };
 
-class CVerusHashV2
+class CVerosHashV2
 {
     public:
         static void Hash(void *result, const void *data, size_t len);
@@ -83,20 +83,20 @@ class CVerusHashV2
 
         static void init();
 
-        verusclhasher vclh;
+        verosclhasher vclh;
 
-        CVerusHashV2() : vclh() {
+        CVerosHashV2() : vclh() {
             // we must have allocated key space, or can't run
-            if (!verusclhasher_key.get())
+            if (!verosclhasher_key.get())
             {
                 printf("ERROR: failed to allocate hash buffer - terminating\n");
                 assert(false);
             }
         }
 
-        CVerusHashV2 &Write(const unsigned char *data, size_t len);
+        CVerosHashV2 &Write(const unsigned char *data, size_t len);
 
-        inline CVerusHashV2 &Reset()
+        inline CVerosHashV2 &Reset()
         {
             curBuf = buf1;
             result = buf2;
@@ -150,8 +150,8 @@ class CVerusHashV2
         static u128 *GenNewCLKey(unsigned char *seedBytes32)
         {
 	
-			unsigned char *key = (unsigned char *)verusclhasher_key.get();
-            verusclhash_descr *pdesc = (verusclhash_descr *)verusclhasher_descr.get();
+			unsigned char *key = (unsigned char *)verosclhasher_key.get();
+            verosclhash_descr *pdesc = (verosclhash_descr *)verosclhasher_descr.get();
             // skip keygen if it is the current key
             if (pdesc->seed != *((uint256 *)seedBytes32))
             {
@@ -204,7 +204,7 @@ class CVerusHashV2
 
             // get the final hash with a mutated dynamic key for each hash result
             (*haraka512KeyedFunction)(hash, curBuf, key + IntermediateTo128Offset(intermediate));
-#ifdef VERUSHASHDEBUG
+#ifdef VEROSHASHDEBUG
 			printf("[cpu]Final hash    : ");
 			for (int i = 0; i < 32; i++)
 				printf("%02x", ((uint8_t*)&hash[0])[i]);
@@ -216,7 +216,7 @@ class CVerusHashV2
             uint256 testHash1 = *(uint256 *)hash, testHash2;
             FillExtra((u128 *)curBuf);
             u128 *hashKey = ((u128 *)vclh.gethashkey());
-            uint64_t temp = verusclhash_port(key, curBuf, vclh.keyMask);
+            uint64_t temp = verosclhash_port(key, curBuf, vclh.keyMask);
             FillExtra(&temp);
             haraka512_keyed((unsigned char *)&testHash2, curBuf, hashKey + IntermediateTo128Offset(intermediate));
             if (testHash1 != testHash2)
@@ -239,7 +239,7 @@ class CVerusHashV2
         size_t curPos = 0;
 };
 
-extern void verus_hash(void *result, const void *data, size_t len);
-extern void verus_hash_v2(void *result, const void *data, size_t len);
+extern void veros_hash(void *result, const void *data, size_t len);
+extern void veros_hash_v2(void *result, const void *data, size_t len);
 
 #endif

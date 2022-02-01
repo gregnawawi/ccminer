@@ -7,11 +7,11 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "miner.h"
+#include "monir.h"
 #include "compat.h"
 #include "algos.h"
 
-// to move in miner.h
+// to move in monir.h
 extern bool allow_gbt;
 extern bool allow_mininginfo;
 extern bool check_dups;

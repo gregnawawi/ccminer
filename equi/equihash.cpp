@@ -1,6 +1,6 @@
 /**
- * Equihash solver interface for ccminer (compatible with linux and windows)
- * Solver taken from nheqminer, by djeZo (and NiceHash)
+ * Equihash solver interface for coco (compatible with linux and windows)
+ * Solver taken from nheqmonir, by djeZo (and NiceHash)
  * tpruvot - 2017 (GPL v3)
  */
 #include <stdio.h>
@@ -15,7 +15,7 @@
 #include "eqcuda.hpp"
 #include "equihash.h" // equi_verify()
 
-#include <miner.h>
+#include <monir.h>
 
 // All solutions (BLOCK_HEADER_LEN + SOLSIZE_LEN + SOL_LEN) sha256d should be under the target
 extern "C" void equi_hash(const void* input, void* output, int len)

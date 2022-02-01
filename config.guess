@@ -86,16 +86,6 @@ fi
 
 trap 'exit 1' 1 2 15
 
-# CC_FOR_BUILD -- compiler used by this script. Note that the use of a
-# compiler to aid in system detection is discouraged as it requires
-# temporary files to be created and, as you can see below, it is a
-# headache to deal with in a portable fashion.
-
-# Historically, `CC_FOR_BUILD' used to be named `HOST_CC'. We still
-# use `HOST_CC' if defined, but it is deprecated.
-
-# Portable tmp directory creation inspired by the Autoconf team.
-
 set_cc_for_build='
 trap "exitcode=\$?; (rm -f \$tmpfiles 2>/dev/null; rmdir \$tmp 2>/dev/null) && exit \$exitcode" 0 ;
 trap "rm -f \$tmpfiles 2>/dev/null; rmdir \$tmp 2>/dev/null; exit 1" 1 2 13 15 ;

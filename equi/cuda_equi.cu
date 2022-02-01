@@ -2079,7 +2079,7 @@ __host__ void eq_cuda_context<RB, SM, SSM, THREADS, PACKER>::solve(const char *t
 		solutionf(thread_id, index_vector, DIGITBITS, nullptr);
 	}
 
-	// ccminer: only use hashdonef if no solutions...
+	// coco: only use hashdonef if no solutions...
 	if (!solutions->nsols)
 		hashdonef(thread_id);
 }

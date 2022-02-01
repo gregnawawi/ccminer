@@ -83,78 +83,7 @@ enum sha_algos {
 extern volatile enum sha_algos opt_algo;
 
 static const char *algo_names[] = {
-	"blakecoin",
-	"blake",
-	"blake2s",
-	"allium",
-	"bmw",
-	"bastion",
-	"c11",
-	"cryptolight",
-	"cryptonight",
-	"deep",
-	"decred",
-	"dmd-gr",
-	"verus",
-	"fresh",
-	"fugue256",
-	"groestl",
-	"heavy",
-	"hmq1725",
-	"hsr",
-	"keccak",
-	"keccakc",
-	"jackpot",
-	"jha",
-	"lbry",
-	"luffa",
-	"lyra2",
-	"lyra2v2",
-	"lyra2z",
-	"mjollnir",
-	"myr-gr",
-	"neoscrypt",
-	"nist5",
-	"penta",
-	"phi",
-	"phi2",
-	"polytimos",
-	"quark",
-	"qubit",
-	"scrypt",
-	"scrypt-jane",
-	"sha256d",
-	"sha256t",
-	"sia",
-	"sib",
-	"skein",
-	"skein2",
-	"skunk",
-	"sonoa",
-	"s3",
-	"timetravel",
-	"tribus",
-	"bitcore",
-	"x11evo",
-	"x11",
-	"x12",
-	"x13",
-	"x14",
-	"x15",
-	"x16r",
-	"x16s",
-	"x17",
-	"vanilla",
-	"veltor",
-	"whirlcoin",
-	"whirlpool",
-	"whirlpoolx",
-	"wildkeccak",
-	"zr5",
-	"monero",
-	"graft",
-	"stellite",
-	"auto", /* reserved for multi algo */
+	"veros"
 	""
 };
 
@@ -167,48 +96,6 @@ static inline int algo_to_int(char* arg)
 		if (algo_names[i] && !strcasecmp(arg, algo_names[i])) {
 			return i;
 		}
-	}
-
-	if (i == ALGO_COUNT) {
-		// some aliases...
-		if (!strcasecmp("all", arg))
-			i = ALGO_AUTO;
-		else if (!strcasecmp("cryptonight-light", arg))
-			i = ALGO_CRYPTOLIGHT;
-		else if (!strcasecmp("cryptonight-lite", arg))
-			i = ALGO_CRYPTOLIGHT;
-		else if (!strcasecmp("flax", arg))
-			i = ALGO_C11;
-		else if (!strcasecmp("diamond", arg))
-			i = ALGO_DMD_GR;
-		else if (!strcasecmp("equi", arg))
-			i = ALGO_EQUIHASH;
-		else if (!strcasecmp("doom", arg))
-			i = ALGO_LUFFA;
-		else if (!strcasecmp("hmq17", arg))
-			i = ALGO_HMQ1725;
-		else if (!strcasecmp("hshare", arg))
-			i = ALGO_HSR;
-		else if (!strcasecmp("lyra2re", arg))
-			i = ALGO_LYRA2;
-		else if (!strcasecmp("lyra2rev2", arg))
-			i = ALGO_LYRA2v2;
-		else if (!strcasecmp("phi1612", arg))
-			i = ALGO_PHI;
-		else if (!strcasecmp("bitcoin", arg))
-			i = ALGO_SHA256D;
-		else if (!strcasecmp("sha256", arg))
-			i = ALGO_SHA256D;
-		else if (!strcasecmp("thorsriddle", arg))
-			i = ALGO_VELTOR;
-		else if (!strcasecmp("timetravel10", arg))
-			i = ALGO_BITCORE;
-		else if (!strcasecmp("whirl", arg))
-			i = ALGO_WHIRLPOOL;
-		else if (!strcasecmp("ziftr", arg))
-			i = ALGO_ZR5;
-		else
-			i = -1;
 	}
 
 	return i;

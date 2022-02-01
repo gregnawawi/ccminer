@@ -1,5 +1,5 @@
 /*
- * This uses veriations of the clhash algorithm for Verus Coin, licensed
+ * This uses veriations of the clhash algorithm for Veros Coin, licensed
  * with the Apache-2.0 open source license.
  * 
  * Copyright (c) 2018 Michael Toutonghi
@@ -17,8 +17,8 @@
  *
  **/
 
-#ifndef INCLUDE_VERUS_CLHASH_H
-#define INCLUDE_VERUS_CLHASH_H
+#ifndef INCLUDE_VEROS_CLHASH_H
+#define INCLUDE_VEROS_CLHASH_H
 
 
 //#include <intrin.h>
@@ -51,19 +51,19 @@ typedef unsigned char u_char;
 #include "haraka.h"
 #include "haraka_portable.h"
 enum {
-    // Verus Key size must include the equivalent size of a Haraka key
+    // Veros Key size must include the equivalent size of a Haraka key
     // after the first part.
     // Any excess over a power of 2 will not get mutated, and any excess over
     // power of 2 + Haraka sized key will not be used
-	VERUSKEYSIZE = 1024 * 8 + (40 * 16),
-	VERUSHHASH_SOLUTION_VERSION = 1
+	VEROSKEYSIZE = 1024 * 8 + (40 * 16),
+	VEROSHHASH_SOLUTION_VERSION = 1
 };
 
 
 
-extern int __cpuverusoptimized;
+extern int __cpuverosoptimized;
 
-inline bool IsCPUVerusOptimized()
+inline bool IsCPUVerosOptimized()
 {
 
 #ifndef _WIN32
@@ -89,7 +89,7 @@ inline bool IsCPUVerusOptimized()
 #endif
 
 
-    if (__cpuverusoptimized & 0x80)
+    if (__cpuverosoptimized & 0x80)
     {
 #ifdef _WIN32
         #define bit_AVX		(1 << 28)
@@ -100,34 +100,34 @@ inline bool IsCPUVerusOptimized()
 
         int cpuInfo[4];
 		__cpuid(cpuInfo, 1);
-        __cpuverusoptimized = ((cpuInfo[2] & (bit_AVX | bit_AES | bit_PCLMUL)) == (bit_AVX | bit_AES | bit_PCLMUL));
+        __cpuverosoptimized = ((cpuInfo[2] & (bit_AVX | bit_AES | bit_PCLMUL)) == (bit_AVX | bit_AES | bit_PCLMUL));
 #else
         unsigned int eax,ebx,ecx,edx;
 
         if (!__get_cpuid(1,&eax,&ebx,&ecx,&edx))
         {
-            __cpuverusoptimized = false;
+            __cpuverosoptimized = false;
         }
         else
         {
-            __cpuverusoptimized = ((ecx & (bit_AVX | bit_AES | bit_PCLMUL)) == (bit_AVX | bit_AES | bit_PCLMUL));
+            __cpuverosoptimized = ((ecx & (bit_AVX | bit_AES | bit_PCLMUL)) == (bit_AVX | bit_AES | bit_PCLMUL));
         }
 #endif //WIN32
     }
-    return __cpuverusoptimized;
+    return __cpuverosoptimized;
 
 };
 
-inline void ForceCPUVerusOptimized(bool trueorfalse)
+inline void ForceCPUVerosOptimized(bool trueorfalse)
 {
-    __cpuverusoptimized = trueorfalse;
+    __cpuverosoptimized = trueorfalse;
 };
 
-uint64_t verusclhashv2_1(void * random, const unsigned char buf[64], uint64_t keyMask, uint32_t *fixrand, uint32_t *fixrandex,
+uint64_t verosclhashv2_1(void * random, const unsigned char buf[64], uint64_t keyMask, uint32_t *fixrand, uint32_t *fixrandex,
 	u128 *g_prand, u128 *g_prandex);
-uint64_t verusclhashv2_2(void * random, const unsigned char buf[64], uint64_t keyMask, uint32_t *fixrand, uint32_t *fixrandex,
+uint64_t verosclhashv2_2(void * random, const unsigned char buf[64], uint64_t keyMask, uint32_t *fixrand, uint32_t *fixrandex,
 	u128 *g_prand, u128 *g_prandex);
-uint64_t verusclhash_port(void * random, const unsigned char buf[64], uint64_t keyMask, uint32_t *fixrand, uint32_t *fixrandex,
+uint64_t verosclhash_port(void * random, const unsigned char buf[64], uint64_t keyMask, uint32_t *fixrand, uint32_t *fixrandex,
 	u128 *g_prand, u128 *g_prandex);
 
 void *alloc_aligned_buffer(uint64_t bufSize);
@@ -141,8 +141,8 @@ void *alloc_aligned_buffer(uint64_t bufSize);
 #include <vector>
 #include <string>
 
-// special high speed hasher for VerusHash 2.0
+// special high speed hasher for VerosHash 2.0
 
 #endif // #ifdef __cplusplus
 
-#endif // INCLUDE_VERUS_CLHASH_H
+#endif // INCLUDE_VEROS_CLHASH_H

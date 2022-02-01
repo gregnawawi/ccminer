@@ -1,20 +1,10 @@
-// (C) 2018 The Verus Developers
-// Distributed under the MIT software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
-/*
-This provides the PoW hash function for Verus, a CPU-optimized hash 
-function with a Haraka V2 core. Unlike Haraka, which is made for short 
-inputs only, Verus Hash takes any length of input and produces a 256 
-bit output.
-*/
 #include <string.h>
 //#include "common.h"
-#include "verus_hash.h"
+#include "veros_hash.h"
 
-void (*CVerusHash::haraka512Function)(unsigned char *out, const unsigned char *in);
+void (*CVerosHash::haraka512Function)(unsigned char *out, const unsigned char *in);
 
-void CVerusHash::Hash(void *result, const void *data, size_t _len)
+void CVerosHash::Hash(void *result, const void *data, size_t _len)
 {
     unsigned char buf[128];
     unsigned char *bufPtr = buf;
@@ -47,14 +37,14 @@ void CVerusHash::Hash(void *result, const void *data, size_t _len)
     memcpy(result, bufPtr, 32);
 };
 
-void CVerusHash::init()
+void CVerosHash::init()
 {
    
         haraka512Function = &haraka512_port_zero;
     
 }
 
-CVerusHash &CVerusHash::Write(const unsigned char *data, size_t _len)
+CVerosHash &CVerosHash::Write(const unsigned char *data, size_t _len)
 {
     unsigned char *tmp;
     uint32_t pos, len = _len;
@@ -85,18 +75,18 @@ CVerusHash &CVerusHash::Write(const unsigned char *data, size_t _len)
 }
 
 // to be declared and accessed from C
-void verus_hash(void *result, const void *data, size_t len)
+void veros_hash(void *result, const void *data, size_t len)
 {
-    return CVerusHash::Hash(result, data, len);
+    return CVerosHash::Hash(result, data, len);
 }
 
-void (*CVerusHashV2::haraka512Function)(unsigned char *out, const unsigned char *in);
-void (*CVerusHashV2::haraka512KeyedFunction)(unsigned char *out, const unsigned char *in, const u128 *rc);
-void (*CVerusHashV2::haraka256Function)(unsigned char *out, const unsigned char *in);
+void (*CVerosHashV2::haraka512Function)(unsigned char *out, const unsigned char *in);
+void (*CVerosHashV2::haraka512KeyedFunction)(unsigned char *out, const unsigned char *in, const u128 *rc);
+void (*CVerosHashV2::haraka256Function)(unsigned char *out, const unsigned char *in);
 
-void CVerusHashV2::init()
+void CVerosHashV2::init()
 {
-    if (IsCPUVerusOptimized())
+    if (IsCPUVerosOptimized())
     {
         load_constants();
         haraka512Function = &haraka512;
@@ -113,7 +103,7 @@ void CVerusHashV2::init()
     }
 }
 
-void CVerusHashV2::Hash(void *result, const void *data, size_t len)
+void CVerosHashV2::Hash(void *result, const void *data, size_t len)
 {
     unsigned char buf[128];
     unsigned char *bufPtr = buf;
@@ -145,7 +135,7 @@ void CVerusHashV2::Hash(void *result, const void *data, size_t len)
     memcpy(result, bufPtr, 32);
 };
 
-CVerusHashV2 &CVerusHashV2::Write(const unsigned char *data, size_t len)
+CVerosHashV2 &CVerosHashV2::Write(const unsigned char *data, size_t len)
 {
     unsigned char *tmp;
 
@@ -175,7 +165,7 @@ CVerusHashV2 &CVerusHashV2::Write(const unsigned char *data, size_t len)
 }
 
 // to be declared and accessed from C
-void verus_hash_v2(void *result, const void *data, size_t len)
+void veros_hash_v2(void *result, const void *data, size_t len)
 {
-    return CVerusHashV2::Hash(result, data, len);
+    return CVerosHashV2::Hash(result, data, len);
 }

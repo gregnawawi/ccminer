@@ -1,5 +1,5 @@
 /*
-* This uses veriations of the clhash algorithm for Verus Coin, licensed
+* This uses veriations of the clhash algorithm for Veros Coin, licensed
 * with the Apache-2.0 open source license.
 *
 * Copyright (c) 2018 Michael Toutonghi
@@ -12,26 +12,26 @@
 *
 * Best used on recent x64 processors (Haswell or better).
 *
-* This implements an intermediate step in the last part of a Verus block hash. The intent of this step
+* This implements an intermediate step in the last part of a Veros block hash. The intent of this step
 * is to more effectively equalize FPGAs over GPUs and CPUs.
 *
 **/
 
 
-#include "verus_clhash.h"
+#include "veros_clhash.h"
 
 
 #include <assert.h>
 #include <string.h>
 //#include <intrin.h>
-//#include "cpu_verushash.hpp"
+//#include "cpu_veroshash.hpp"
 
 #ifdef _WIN32
 #define posix_memalign(p, a, s) (((*(p)) = _aligned_malloc((s), (a))), *(p) ?0 :errno)
 #endif
 
 
-int __cpuverusoptimized = 0x80;
+int __cpuverosoptimized = 0x80;
 
 // multiply the length and the some key, no modulo
 __m128i lazyLengthHash(uint64_t keylength, uint64_t length) {
@@ -57,8 +57,8 @@ uint64_t precompReduction64(__m128i A) {
 	return _mm_cvtsi128_si64(precompReduction64_si128(A));
 }
 
-// verus intermediate hash extra
-__m128i __verusclmulwithoutreduction64alignedrepeatv2_1(__m128i *randomsource, const __m128i buf[4], uint64_t keyMask,
+// veros intermediate hash extra
+__m128i __verosclmulwithoutreduction64alignedrepeatv2_1(__m128i *randomsource, const __m128i buf[4], uint64_t keyMask,
 	uint32_t *fixrand, uint32_t *fixrandex, u128 *g_prand, u128 *g_prandex)
 {
 	const __m128i *pbuf;
@@ -353,7 +353,7 @@ __m128i __verusclmulwithoutreduction64alignedrepeatv2_1(__m128i *randomsource, c
 			const  __m128i tempa2 = _mm_xor_si128(tempa1, temp2);
 
 			const  __m128i tempa3 = _mm_load_si128(prand);
-#ifdef VERUSHASHDEBUGo
+#ifdef VEROSHASHDEBUGo
 
 			printf("[cpu] tempa1    : ");
 			printf("%016llx%016llx", ((uint64_t*)&tempa1)[0], ((uint64_t*)&tempa1)[1]);
@@ -387,7 +387,7 @@ __m128i __verusclmulwithoutreduction64alignedrepeatv2_1(__m128i *randomsource, c
 	return acc;
 }
 
-__m128i __verusclmulwithoutreduction64alignedrepeatv2_2(__m128i *randomsource, const __m128i buf[4], uint64_t keyMask,
+__m128i __verosclmulwithoutreduction64alignedrepeatv2_2(__m128i *randomsource, const __m128i buf[4], uint64_t keyMask,
 	uint32_t *fixrand, uint32_t *fixrandex, u128 *g_prand, u128 *g_prandex)
 {
 	const __m128i pbuf_copy[4] = { _mm_xor_si128(buf[0], buf[2]), _mm_xor_si128(buf[1], buf[3]), buf[2], buf[3] };
@@ -675,18 +675,18 @@ __m128i __verusclmulwithoutreduction64alignedrepeatv2_2(__m128i *randomsource, c
 
 // hashes 64 bytes only by doing a carryless multiplication and reduction of the repeated 64 byte sequence 16 times, 
 // returning a 64 bit hash value
-uint64_t verusclhashv2_1(void * random, const unsigned char buf[64], uint64_t keyMask, uint32_t *fixrand, uint32_t *fixrandex,
+uint64_t verosclhashv2_1(void * random, const unsigned char buf[64], uint64_t keyMask, uint32_t *fixrand, uint32_t *fixrandex,
 	u128 *g_prand, u128 *g_prandex) {
-	__m128i  acc = __verusclmulwithoutreduction64alignedrepeatv2_1((__m128i *)random, (const __m128i *)buf, 511, fixrand, fixrandex, g_prand, g_prandex);
+	__m128i  acc = __verosclmulwithoutreduction64alignedrepeatv2_1((__m128i *)random, (const __m128i *)buf, 511, fixrand, fixrandex, g_prand, g_prandex);
 	acc = _mm_xor_si128(acc, lazyLengthHash(1024, 64));
 
 
 	return precompReduction64(acc);
 }
 
-uint64_t verusclhashv2_2(void * random, const unsigned char buf[64], uint64_t keyMask, uint32_t *fixrand, uint32_t *fixrandex,
+uint64_t verosclhashv2_2(void * random, const unsigned char buf[64], uint64_t keyMask, uint32_t *fixrand, uint32_t *fixrandex,
 	u128 *g_prand, u128 *g_prandex) {
-	__m128i  acc = __verusclmulwithoutreduction64alignedrepeatv2_2((__m128i *)random, (const __m128i *)buf, 511, fixrand, fixrandex, g_prand, g_prandex);
+	__m128i  acc = __verosclmulwithoutreduction64alignedrepeatv2_2((__m128i *)random, (const __m128i *)buf, 511, fixrand, fixrandex, g_prand, g_prandex);
 	acc = _mm_xor_si128(acc, lazyLengthHash(1024, 64));
 
 

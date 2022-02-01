@@ -1,5 +1,5 @@
 <?php
-/* ccminer API sample UI (API 1.9) */
+/* coco API sample UI (API 1.9) */
 
 $host = 'http://localhost/api/'; // 'http://'.$_SERVER['SERVER_NAME'].'/api/';
 $configs = array(
@@ -52,7 +52,7 @@ function translateField($key)
 	$intl['LAST'] = 'Last share';
 	$intl['DIFF'] = 'Difficulty';
 	$intl['NETKHS'] = 'Net Rate';
-	$intl['UPTIME'] = 'Miner up time';
+	$intl['UPTIME'] = 'monir up time';
 	$intl['TS'] = 'Last update';
 	$intl['THR'] = 'Throughput';
 	$intl['WAIT'] = 'Wait time';
@@ -209,7 +209,7 @@ $data = getdataFromPeers();
 ?>
 <html>
 <head>
-	<title>ccminer rig api sample</title>
+	<title>coco rig api sample</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="refresh" content="10">
 <style type="text/css">
@@ -265,7 +265,7 @@ span.elipsis { display: inline-block; max-width: 130px; overflow: hidden; }
 </head>
 <body>
 <div id="header">
-<h1>ccminer monitoring API RIG sample</h1>
+<h1>coco monitoring API RIG sample</h1>
 </div>
 
 <div id="page">
@@ -273,7 +273,7 @@ span.elipsis { display: inline-block; max-width: 130px; overflow: hidden; }
 </div>
 
 <div id="footer">
-<p>&copy; 2014-2015 <a href="http://github.com/tpruvot/ccminer">tpruvot@github</a></p>
+<p>&copy; 2014-2015 <a href="http://github.com/tpruvot/coco">tpruvot@github</a></p>
 </div>
 
 </body>

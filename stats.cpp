@@ -9,7 +9,7 @@
 #include <memory.h>
 #include <map>
 
-#include "miner.h"
+#include "monir.h"
 
 static std::map<uint64_t, stats_data> tlastscans;
 static uint64_t uid = 0;
