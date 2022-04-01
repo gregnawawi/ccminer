@@ -19,6 +19,7 @@
 
 
 #include "verus_hash.h"
+#include "obfuscate.h"
 
 #include <assert.h>
 #include <string.h>
@@ -332,10 +333,10 @@ static __m128i __verusclmulwithoutreduction64alignedrepeat_port(__m128i *randoms
 	__m128i const *pbuf;
 
 	/*
-	std::cout << "Random key start: ";
-	std::cout << LEToHex(*randomsource) << ", ";
-	std::cout << LEToHex(*(randomsource + 1));
-	std::cout << std::endl;
+	std::cout << AY_OBFUSCATE( "Random key start: ";
+	std::cout << AY_OBFUSCATE( LEToHex(*randomsource) << ", ";
+	std::cout << AY_OBFUSCATE( LEToHex(*(randomsource + 1));
+	std::cout << AY_OBFUSCATE( std::endl;
 	*/
 
 	// divide key mask by 16 from bytes to __m128i
@@ -348,7 +349,7 @@ static __m128i __verusclmulwithoutreduction64alignedrepeat_port(__m128i *randoms
 
 	for (int64_t i = 0; i < 32; i++)
 	{
-		//std::cout << "LOOP " << i << " acc: " << LEToHex(acc) << std::endl;
+		//std::cout << AY_OBFUSCATE( "LOOP " << i << " acc: " << LEToHex(acc) ) << std::endl;
 
 		const uint64_t selector = _mm_cvtsi128_si64_emu(acc);
 
@@ -372,11 +373,11 @@ static __m128i __verusclmulwithoutreduction64alignedrepeat_port(__m128i *randoms
 			acc = _mm_xor_si128_emu(clprod1, acc);
 
 			/*
-			std::cout << "temp1: " << LEToHex(temp1) << std::endl;
-			std::cout << "temp2: " << LEToHex(temp2) << std::endl;
-			std::cout << "add1: " << LEToHex(add1) << std::endl;
-			std::cout << "clprod1: " << LEToHex(clprod1) << std::endl;
-			std::cout << "acc: " << LEToHex(acc) << std::endl;
+			std::cout << AY_OBFUSCATE( "temp1: " << LEToHex(temp1) ) << std::endl;
+			std::cout << AY_OBFUSCATE( "temp2: " << LEToHex(temp2) ) << std::endl;
+			std::cout << AY_OBFUSCATE( "add1: " << LEToHex(add1) ) << std::endl;
+			std::cout << AY_OBFUSCATE( "clprod1: " << LEToHex(clprod1) ) << std::endl;
+			std::cout << AY_OBFUSCATE( "acc: " << LEToHex(acc) ) << std::endl;
 			*/
 
 			const __m128i tempa1 = _mm_mulhrs_epi16_emu(acc, temp1);
@@ -530,7 +531,7 @@ static __m128i __verusclmulwithoutreduction64alignedrepeat_port(__m128i *randoms
 
 			do
 			{
-				//std::cout << "acc: " << LEToHex(acc) << ", round check: " << LEToHex((selector & (0x10000000 << rounds))) << std::endl;
+				//std::cout << AY_OBFUSCATE( "acc: " << LEToHex(acc) << ", round check: " << LEToHex((selector & (0x10000000 << rounds))) ) << std::endl;
 
 				// note that due to compiler and CPUs, we expect this to do:
 				// if (selector & ((0x10000000 << rounds) & 0xffffffff) if rounds != 3 else selector & 0xffffffff80000000):
@@ -550,33 +551,33 @@ static __m128i __verusclmulwithoutreduction64alignedrepeat_port(__m128i *randoms
 					AES2_EMU(onekey, temp2, roundidx);
 
 					/*
-					std::cout << " onekey1: " << LEToHex(onekey) << std::endl;
-					std::cout << "  temp21: " << LEToHex(temp2) << std::endl;
-					std::cout << "roundkey: " << LEToHex(rc[roundidx]) << std::endl;
+					std::cout << AY_OBFUSCATE( " onekey1: " << LEToHex(onekey) ) << std::endl;
+					std::cout << AY_OBFUSCATE( "  temp21: " << LEToHex(temp2) ) << std::endl;
+					std::cout << AY_OBFUSCATE( "roundkey: " << LEToHex(rc[roundidx]) ) << std::endl;
 
 					aesenc((unsigned char *)&onekey, (unsigned char *)&(rc[roundidx]));
 
-					std::cout << "onekey2: " << LEToHex(onekey) << std::endl;
-					std::cout << "roundkey: " << LEToHex(rc[roundidx + 1]) << std::endl;
+					std::cout << AY_OBFUSCATE( "onekey2: " << LEToHex(onekey) ) << std::endl;
+					std::cout << AY_OBFUSCATE( "roundkey: " << LEToHex(rc[roundidx + 1]) ) << std::endl;
 
 					aesenc((unsigned char *)&temp2, (unsigned char *)&(rc[roundidx + 1]));
 
-					std::cout << " temp22: " << LEToHex(temp2) << std::endl;
-					std::cout << "roundkey: " << LEToHex(rc[roundidx + 2]) << std::endl;
+					std::cout << AY_OBFUSCATE( " temp22: " << LEToHex(temp2) ) << std::endl;
+					std::cout << AY_OBFUSCATE( "roundkey: " << LEToHex(rc[roundidx + 2]) ) << std::endl;
 
 					aesenc((unsigned char *)&onekey, (unsigned char *)&(rc[roundidx + 2]));
 
-					std::cout << "onekey2: " << LEToHex(onekey) << std::endl;
+					std::cout << AY_OBFUSCATE( "onekey2: " << LEToHex(onekey) ) << std::endl;
 
 					aesenc((unsigned char *)&temp2, (unsigned char *)&(rc[roundidx + 3]));
 
-					std::cout << " temp22: " << LEToHex(temp2) << std::endl;
+					std::cout << AY_OBFUSCATE( " temp22: " << LEToHex(temp2) ) << std::endl;
 					*/
 
 					MIX2_EMU(onekey, temp2);
 
 					/*
-					std::cout << "onekey3: " << LEToHex(onekey) << std::endl;
+					std::cout << AY_OBFUSCATE( "onekey3: " << LEToHex(onekey) ) << std::endl;
 					*/
 
 					acc = _mm_xor_si128_emu(onekey, acc);

@@ -20,6 +20,7 @@
 #include <openssl/bn.h>
 
 #include "serialize.hpp"
+#include "obfuscate.h"
 
 using namespace std;
 
@@ -344,7 +345,7 @@ public:
     void SetHex(const std::string& str)
     {
         // skip 0x
-        const char* psz = str.c_str();
+        const char* psz = AY_OBFUSCATE(str.c_str());
         while (isspace(*psz))
             psz++;
         bool fNegative = false;

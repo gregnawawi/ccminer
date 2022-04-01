@@ -9,6 +9,7 @@
 #include <miner.h>
 
 #include "equihash.h"
+#include "obfuscate.h"
 
 extern struct stratum_ctx stratum;
 extern pthread_mutex_t stratum_work_lock;
@@ -198,7 +199,7 @@ bool equi_stratum_show_message(struct stratum_ctx *sctx, json_t *id, json_t *par
 
 	val = json_array_get(params, 0);
 	if (val) {
-		const char* data = json_string_value(val);
+		const char* data = AY_OBFUSCATE(json_string_value(val));
 		if (data && strlen(data)) {
 			char symbol[32] = { 0 };
 			uint32_t height = 0;

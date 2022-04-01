@@ -35,7 +35,7 @@
 #endif
 #include "miner.h"
 #include "elist.h"
-
+#include "obfuscate.h"
 
 
 extern pthread_mutex_t stratum_sock_lock;
@@ -105,7 +105,7 @@ void applog(int prio, const char *fmt, ...)
 	if (0) {}
 #endif
 	else {
-		const char* color = "";
+		const char* color = AY_OBFUSCATE("");
 		const time_t now = time(NULL);
 		char *f;
 		int len;
@@ -1354,7 +1354,7 @@ bool stratum_authorize(struct stratum_ctx *sctx, const char *user, const char *p
 	if (!res_val || json_is_false(res_val) ||
 	    (err_val && !json_is_null(err_val)))  {
 		if (err_val && json_is_array(err_val)) {
-			const char* reason = json_string_value(json_array_get(err_val, 1));
+			const char* reason = AY_OBFUSCATE(json_string_value(json_array_get(err_val, 1)));
 			applog(LOG_ERR, "Stratum authentication failed (%s)", reason);
 		}
 		else applog(LOG_ERR, "Stratum authentication failed");
@@ -2032,7 +2032,7 @@ size_t time2str(char* buf, time_t timer)
  */
 char* atime2str(time_t timer)
 {
-	char* buf = (char*) malloc(16);
+	char* buf = AY_OBFUSCATE((char*) malloc(16));
 	memset(buf, 0, 16);
 	time2str(buf, timer);
 	return buf;
@@ -2081,7 +2081,7 @@ void applog_hash64(void *hash)
 
 void applog_hex(void *data, int len)
 {
-	char* hex = bin2hex((uchar*)data, len);
+	char* hex = AY_OBFUSCATE(bin2hex((uchar*)data, len));
 	applog(LOG_DEBUG, "%s", hex);
 	free(hex);
 }

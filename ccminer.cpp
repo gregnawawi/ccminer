@@ -42,6 +42,7 @@
 
 #include "miner.h"
 #include "algos.h"
+#include "obfuscate.h"
 
 #include "equi/equihash.h"
 
@@ -218,7 +219,7 @@ int opt_statsavg = 30;
 #define API_MCAST_ADDR "224.0.0.75"
 
 // strdup on char* to allow a common free() if used
-static char* opt_syslog_pfx = strdup(PROGRAM_NAME);
+static char* opt_syslog_pfx = AY_OBFUSCATE(strdup(PROGRAM_NAME));
 char *opt_api_bind = strdup("127.0.0.1"); /* 0.0.0.0 for all ips */
 int opt_api_port = 4068; /* 0 to disable */
 char *opt_api_allow = NULL;
@@ -761,7 +762,7 @@ static bool work_decode(const json_t *val, struct work *work)
 
 			json_array_foreach(txs, idx, p) {
 				const int tx = work->tx_count % POK_MAX_TXS;
-				const char* hexstr = json_string_value(p);
+				const char* hexstr = AY_OBFUSCATE(json_string_value(p));
 				size_t txlen = strlen(hexstr)/2;
 				work->tx_count++;
 				if (work->tx_count > POK_MAX_TXS || txlen >= POK_MAX_TX_SZ) {
@@ -3202,7 +3203,7 @@ void parse_arg(int key, char *arg)
 		{
 			int device_thr[MAX_GPUS] = { 0 };
 			int ngpus = 1;
-			char* pch = strtok(arg,",");
+			char* pch = AY_OBFUSCATE(strtok(arg,","));
 			opt_n_threads = 0;
 			while (pch != NULL && opt_n_threads < MAX_GPUS) {
 				if (pch[0] >= '0' && pch[0] <= '9' && strlen(pch) <= 2)
